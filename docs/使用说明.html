@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHub Hotboard · 使用说明</title>
+<style>
+  :root{
+    --ink:#0d1526; --ink2:#39445a; --muted:#6b7690; --faint:#9aa5ba;
+    --line:#e4e8f1; --bg:#f5f7fb; --panel:#fff;
+    --blue:#2563eb; --blue-soft:#eef3ff;
+    --amber:#b45309; --amber-soft:#fff7e8; --amber-line:#f3dfae;
+    --green:#0f8a5f; --green-soft:#eafaf3;
+    --rose:#c2185b; --rose-soft:#fff0f5;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);line-height:1.75;
+    font-family:"Inter","Noto Sans SC","PingFang SC","Microsoft YaHei",-apple-system,"Segoe UI",sans-serif;
+    font-size:15px;-webkit-font-smoothing:antialiased;
+  }
+  .page{max-width:880px;margin:0 auto;padding:48px 28px 80px}
+  header{border-bottom:1px solid var(--line);padding-bottom:26px;margin-bottom:34px}
+  .kicker{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:12px}
+  h1{font-size:34px;line-height:1.25;margin:0 0 12px;letter-spacing:-.022em;font-weight:800}
+  h1 small{display:block;font-size:15px;font-weight:400;color:var(--muted);letter-spacing:0;margin-top:10px}
+  h2{
+    font-size:20px;margin:44px 0 14px;letter-spacing:-.015em;font-weight:800;
+    padding-left:14px;border-left:3px solid var(--blue);
+  }
+  h3{font-size:15.5px;margin:26px 0 8px;font-weight:750}
+  p{margin:10px 0;color:var(--ink2)}
+  ul,ol{padding-left:22px;margin:10px 0}
+  li{margin:6px 0;color:var(--ink2)}
+  b,strong{color:var(--ink)}
+  code{
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px;
+    background:#eef1f7;padding:1.5px 6px;border-radius:5px;color:#1e293b;
+  }
+  a{color:var(--blue)}
+  .lead{
+    font-size:15.5px;color:var(--ink2);background:var(--panel);border:1px solid var(--line);
+    border-radius:14px;padding:18px 22px;margin:0 0 8px;
+  }
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:18px 0}
+  .box{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:15px 18px}
+  .box b{display:block;font-size:14px;margin-bottom:4px}
+  .box span{font-size:13.5px;color:var(--muted);line-height:1.65}
+  .warn{
+    background:var(--amber-soft);border:1px solid var(--amber-line);border-radius:12px;
+    padding:16px 20px;margin:18px 0;
+  }
+  .warn .t{font-weight:800;color:var(--amber);font-size:14px;margin-bottom:6px}
+  .warn ul{margin:6px 0 0}
+  .warn li{color:#6b4406}
+  .tip{
+    background:var(--green-soft);border:1px solid #cdeee0;border-radius:12px;
+    padding:14px 18px;margin:16px 0;font-size:14px;color:#0b5d43;
+  }
+  .danger{
+    background:var(--rose-soft);border:1px solid #f7d4e2;border-radius:12px;
+    padding:14px 18px;margin:16px 0;font-size:14px;color:#8c1140;
+  }
+  table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px;background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  th{text-align:left;font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);background:#fafbfe;padding:10px 14px;border-bottom:1px solid var(--line);font-weight:700}
+  td{padding:10px 14px;border-bottom:1px solid #f0f2f7;vertical-align:top;color:var(--ink2)}
+  tr:last-child td{border-bottom:none}
+  td:first-child{white-space:nowrap;font-weight:650;color:var(--ink)}
+  details{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin:8px 0}
+  summary{cursor:pointer;font-weight:650;font-size:14.5px;color:var(--ink)}
+  details p{margin:10px 0 2px;font-size:14px}
+  kbd{
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
+    border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;
+    padding:1px 6px;background:var(--panel);color:var(--ink2);
+  }
+  .steps{counter-reset:s;list-style:none;padding:0}
+  .steps li{
+    counter-increment:s;position:relative;padding-left:38px;margin:12px 0;color:var(--ink2);
+  }
+  .steps li::before{
+    content:counter(s);position:absolute;left:0;top:2px;width:24px;height:24px;border-radius:7px;
+    background:var(--blue);color:#fff;font-size:12.5px;font-weight:800;display:grid;place-items:center;
+  }
+  footer{margin-top:56px;padding-top:22px;border-top:1px solid var(--line);font-size:12.5px;color:var(--faint)}
+  @media (max-width:680px){
+    .page{padding:32px 18px 60px}
+    h1{font-size:26px}
+    .grid{grid-template-columns:1fr}
+  }
+  @media print{
+    body{background:#fff}
+    .page{max-width:none;padding:0}
+    details{border:none;padding:0}
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+<header>
+  <div class="kicker">GitHub 热榜 · 桌面版</div>
+  <h1>使用说明与注意事项
+    <small>v1.0.0 · 2026-10-27 · 适用于 GitHub Hotboard.exe 与网页版</small>
+  </h1>
+</header>
+
+<p class="lead">
+  这是一个查看 GitHub 热门项目的本地看板：全站热榜、新项目榜、分类精选、DeepSeek 插件榜、我的榜单，
+  支持自动刷新、Star 增长曲线、自定义关注列表，以及详情页的<b>双语 README 与 AI 总结</b>。
+  数据直接来自 GitHub 官方接口，<b>不需要注册、不需要登录</b>。
+</p>
+
+<h2>一、怎么启动</h2>
+
+<h3>方式 A：双击 exe（推荐）</h3>
+<ol class="steps">
+  <li>双击 <code>GitHub Hotboard.exe</code>。</li>
+  <li>第一次启动会稍慢（约 15~30 秒：程序要解压自身、创建浏览器内核配置），之后一般 5~10 秒。</li>
+  <li>如果窗口出来了但内容空白，先等 20 秒——首次创建配置时加载确实慢。</li>
+  <li>窗口打开后会自动拉取数据，首屏大约 2~3 秒出现榜单。</li>
+</ol>
+
+<h3>方式 B：网页版（备用）</h3>
+<p>如果 exe 因为杀毒软件或系统原因打不开，可以直接双击 <code>github-hot.html</code>，
+用 Edge / Chrome 打开，功能完全一样。也可以双击 <code>打开热榜.bat</code>，它会用无地址栏的应用窗口打开。</p>
+
+<div class="tip">
+  <b>建议：</b>把 <code>GitHub Hotboard.exe</code> 发送到桌面快捷方式（右键 → 发送到 → 桌面快捷方式），以后一键打开。
+</div>
+
+<h2>二、界面说明</h2>
+
+<table>
+  <thead><tr><th>区域</th><th>说明</th></tr></thead>
+  <tbody>
+    <tr><td>全站热榜</td><td>Star 最高的 100 个项目，实时更新。带排名升降（▲▼）和 Star 变化。</td></tr>
+    <tr><td>新项目榜</td><td>按创建时间筛选的新项目。可切换近 30 天 / 90 天 / 半年，按总 Star 或<b>日均增速</b>排序。</td></tr>
+    <tr><td>分类精选</td><td>65 个值得看的项目，分 5 类，每个配一句中文点评。</td></tr>
+    <tr><td>DeepSeek 插件</td><td>6,896 个 DeepSeek Harness 插件，可按下载量或 Star 排序，含近 30 天真实下载量；点任意一行可看详情。</td></tr>
+    <tr><td>我的榜单</td><td>自己关注的仓库，最多 24 个，支持批量粘贴添加；可一键「批量总结」，并在顶部看到 Star 涨跌、新提交、停更提醒。</td></tr>
+    <tr><td>详情页</td><td>点任意一行进入：项目简介双语、指标、README 全文、增长曲线；右上角可一键下载源码或安装包。</td></tr>
+    <tr><td>每日简报</td><td>当天的一页汇总：榜单新进/掉出、今日涨幅、关注项目变动、新面孔与黑马，每天自动换新。</td></tr>
+    <tr><td>AI 记录</td><td>译文与 AI 总结的清单：进度、占用空间、今日额度用量，可逐条或全部删除。</td></tr>
+    <tr><td>连通性指示</td><td>顶栏「刷新」左边的小药丸（圆点 + 延迟）。绿=正常、黄=偏慢、红=断开，点一下立即重新检测。进入项目详情后，详情页顶栏右侧也会出现同一个状态。</td></tr>
+    <tr><td>右上角圆环</td><td>自动刷新倒计时，走完一圈自动拉一次数据。</td></tr>
+    <tr><td>「刷新」按钮</td><td>立即刷新（快捷键 <kbd>R</kbd>）。</td></tr>
+    <tr><td>间隔下拉框</td><td>30 秒 / 1 / 2 / 5 / 15 分钟，或「手动刷新」关闭自动刷新。</td></tr>
+  </tbody>
+</table>
+
+<h3>详情页：点任意一行进入</h3>
+<p>点榜单里的任意一行（项目名以外的位置），会整页打开该项目的详情：</p>
+<ul>
+  <li><b>项目简介</b>：原文在上、中文译文在下，一一对应。</li>
+  <li><b>六项指标</b>：Star、Fork、Issue、日均新增、创建天数、主要语言。</li>
+  <li><b>README 全文</b>：自动解析标题、列表、代码块、表格、图片，徽章和纯装饰行会被过滤掉。</li>
+  <li><b>两条曲线并列</b>：左边是本机采样（从你使用起累积），右边是 star-history.com 的真实历史曲线，新装也能立刻看到长期趋势。</li>
+  <li><b>右侧栏</b>：目录导航（长 README 快速跳转）、项目信息、标签，以及<b>同类项目</b>推荐（按语言和标签匹配，点一下直接跳过去）。</li>
+  <li>左上角「← 返回榜单」回到原来的位置，按 <kbd>Esc</kbd> 也可以。</li>
+</ul>
+
+<h4 style="font-size:14px;margin:18px 0 6px">中文翻译怎么用</h4>
+<p>顶部有三个切换按钮：<b>仅中文 / 双语对照 / 仅原文</b>。对照模式下，每一段原文下面紧跟它的译文，代码块、图片、表格不参与翻译，格式不会被破坏。</p>
+<p>翻译有两种引擎，在「关于」页切换：</p>
+<table>
+  <thead><tr><th>引擎</th><th>要不要 Key</th><th>能翻多少</th><th>适合</th></tr></thead>
+  <tbody>
+    <tr><td>DeepSeek</td><td>要</td><td>README 全文，质量最好</td><td>经常看、想完整对照</td></tr>
+    <tr><td>免费在线翻译</td><td>不要</td><td>每天约 5,000 字符，够翻简介和开头十几段</td><td>偶尔看看、不想配置</td></tr>
+  </tbody>
+</table>
+<p><b>翻译是手动触发的</b>：打开详情页不会自动翻译、不消耗任何额度。每个项目的详情页右上角都有自己的「翻译为中文」按钮，点它才调接口。翻过一次就缓存在本机，再看不再扣费。</p>
+<p><b>随时可以暂停</b>：翻译过程中按钮会变成「暂停 45%」，点一下就停。已翻好的部分立刻生效并保存，按钮随后变成「继续翻译（剩 N 段）」，想接着翻再点一次就行——不会重复翻已经翻过的段落，也不会重复扣费。</p>
+<p><b>换引擎后能接着翻</b>：之前用免费引擎翻了一半、额度用完了，这时填入 DeepSeek Key，再打开同一个项目，<b>已经翻好的段落会原样保留</b>，按钮显示「继续翻译（剩 N 段）」，点一下只用 DeepSeek 补翻剩下的部分。程序不会自动开始——需要你点一下，避免在你不知情时产生费用。想整篇都用 DeepSeek 重翻，点工具栏的「全部重翻」。</p>
+<p>注意两点：① 如果你在「关于」页把引擎固定成了「只用免费在线翻译」，填了 Key 也不会生效，要切回「自动」；② 如果项目作者之后改了 README，旧译文会因为内容对不上而自动失效，需要重新翻。</p>
+<p><b>额度用完会明确告诉你</b>：免费引擎由 MyMemory 按 IP 计算额度（每天约 5,000 字符，实际比这个更紧）。一旦用完，页面会直接弹出黄色提示条，写明「为什么停」「什么时候恢复」「现在还能怎么办」，并把翻译按钮改成「免费额度已用完」，不会让你点了没反应、自己猜原因。</p>
+<p>引擎默认是「自动」：填了 Key 就用 DeepSeek，没填就走免费接口。按钮旁边会显示当前引擎和免费额度还剩多少字。</p>
+
+<h4 style="font-size:14px;margin:18px 0 6px">API Key 可以存多个、随时切换</h4>
+<p>「关于」页的 Key 区域现在是一个列表：</p>
+<ul>
+  <li>粘贴 Key、可选填一个<b>备注名</b>（比如「主力」「公司账号」），点保存就进列表并自动切换过去。</li>
+  <li>下拉框切换 Key，<b>立即生效</b>，不用重开程序；已经打开的详情页下次点翻译就用新 Key。</li>
+  <li>右侧「删除」只删当前选中的那个，删完自动切到列表里的下一个。</li>
+  <li>最多存 8 个。列表和当前选择都存在本机，<b>关掉再打开还在</b>。</li>
+  <li>Key 只显示后四位（<code>sk-…1111</code>），不会明文展示在界面上。</li>
+</ul>
+
+<div class="note" style="background:var(--amber-soft);border:1px solid var(--amber-line);border-radius:12px;padding:14px 18px;margin:16px 0;font-size:14px;color:#6b4406">
+  <b>导出的备份里不含 Key</b>（也不含 GitHub Token）。这是刻意的：备份文件可能被拷来拷去，密钥不该跟着走。换设备后重新粘贴一次即可。
+</div>
+
+<div class="tip">
+  <b>完全不想联网翻译也可以：</b>精选的 65 个项目自带中文简介，离线就能看到中文。
+</div>
+
+<h4 style="font-size:14px;margin:18px 0 6px">AI 总结：判断这个项目值不值得看</h4>
+<p>详情页右上角的「AI 总结」会读一遍 README，再结合 Star、Fork、未关闭 Issue、创建时间、最近推送、许可证，给出一张决策卡：</p>
+<table>
+  <thead><tr><th>小节</th><th>回答什么</th></tr></thead>
+  <tbody>
+    <tr><td>一句话定位</td><td>它到底是什么</td></tr>
+    <tr><td>解决什么问题</td><td>为什么存在、替代了什么麻烦</td></tr>
+    <tr><td>核心能力</td><td>3~5 条，扫一眼就知道能干什么</td></tr>
+    <tr><td>上手成本</td><td>要不要装环境、有没有 Docker、有没有在线 Demo</td></tr>
+    <tr><td>值得注意</td><td>维护活跃度、许可证、明显短板</td></tr>
+    <tr><td>阅读建议</td><td>想最快跑起来，该看 README 的哪一节</td></tr>
+  </tbody>
+</table>
+<p>需要 DeepSeek Key（免费引擎做不了总结）。<b>手动触发、不会自动跑</b>，结果缓存在本机，同一个项目不会重复花钱；README 改了才会失效。一次约 2~3k token，不到一分钱。</p>
+<p>它比「自己读 README」多出来的价值，在于把 README 里没有的信息也纳入了判断——比如「最近一次提交在 8 个月前，同时积压了 1,200 个未关闭 issue，维护可能停滞」。这类结论只看 README 是得不出来的。</p>
+<div class="note" style="background:var(--amber-soft);border:1px solid var(--amber-line);border-radius:12px;padding:14px 18px;margin:16px 0;font-size:14px;color:#6b4406">
+  <b>两点说明：</b>① AI 会出错，卡片底部标注了「以原文为准」，重要结论请回原文核对；② 如果某个项目的 README 只有徽章和图片、几乎没有正文，程序会直接跳过并说明原因，不会让模型硬编。
+</div>
+
+<h4 style="font-size:14px;margin:18px 0 6px">用哪个模型：默认 flash，可切 pro</h4>
+<p>「关于」页有一项「AI 总结模型」，两个选项：</p>
+<table>
+  <thead><tr><th>模型</th><th>适合什么</th><th>价格（输入未命中 / 输出，元每百万 token）</th></tr></thead>
+  <tbody>
+    <tr><td><code>deepseek-flash</code><br><span style="font-size:12px;color:var(--muted)">V4.1-Flash</span></td>
+        <td>默认。总结、批量总结、每日点评都够用</td>
+        <td>1 / 4（空闲）<br>2 / 8（高峰）</td></tr>
+    <tr><td><code>deepseek-v4-pro</code><br><span style="font-size:12px;color:var(--muted)">V4-Pro</span></td>
+        <td>想让它判断更细、少说套话时</td>
+        <td>4.5 / 13.5（空闲）<br>9 / 27（高峰）</td></tr>
+  </tbody>
+</table>
+<p>下面还有一个「总结时开启思考模式」：勾上之后模型先推理再作答，结论更稳，但更慢更贵。默认关闭。切换后立即生效，设置存在本机。</p>
+<p><b>翻译不受这两个设置影响</b>：翻译固定用 <code>deepseek-flash</code> 并关闭思考。逐段翻译是机械任务，开思考只会变慢变贵，质量差异肉眼看不出来。</p>
+<div class="note" style="background:var(--amber-soft);border:1px solid var(--amber-line);border-radius:12px;padding:14px 18px;margin:16px 0;font-size:14px;color:#6b4406">
+  <b>模型名会变。</b>DeepSeek 已在 2026 年 7 月 24 日停用 <code>deepseek-chat</code> 与 <code>deepseek-reasoner</code> 两个旧名字。如果哪天接口报「模型名被拒」，到「关于」页换一个即可——程序会给出明确提示，不会只丢一个状态码。
+</div>
+
+<h4 style="font-size:14px;margin:18px 0 6px">AI 记录：译文与总结都在这里</h4>
+<p>「AI 记录」页分两块：上半是<b>译文</b>（段数、字符数、引擎、时间），下半是<b>AI 总结</b>（一句话定位、生成时间、类型）。顶部五张卡显示：已翻译项目、未翻完、已生成总结、占用空间、今日免费额度用量。</p>
+<p>总结分两种，在表里用标签区分：<b>详细</b>是详情页生成的完整决策卡，<b>一句话</b>是「我的榜单」批量生成的定位句。同一个项目两者都有时只显示详细的那条。</p>
+<ul>
+  <li>「进度」列显示已翻段数 / 可翻总段数，翻了一半的会标上「未完成」，顶部也会统计有几个。</li>
+  <li>点项目名直接打开它的详情页，接着点「继续翻译」即可续翻。</li>
+  <li>点每行右侧的 <b>×</b> 只删掉这个项目的译文，不影响别的。</li>
+  <li>「清空全部译文」会一次性清空，下次查看需要重新翻译（会弹确认框）。</li>
+</ul>
+
+<div class="note" style="background:var(--amber-soft);border:1px solid var(--amber-line);border-radius:12px;padding:14px 18px;margin:16px 0;font-size:14px;color:#6b4406">
+  <b>关于翻译成本：</b>默认不自动翻译，只有你点了按钮才会计费。DeepSeek 按 README 长度收费，普通项目一次约几分钱；免费引擎不要钱，但每天只有约 5,000 字符额度，翻长 README 会中途停下并告诉你翻了多少段。两者都会缓存，同一个项目不会重复消耗。
+</div>
+
+<div class="note" style="background:var(--rose-soft);border:1px solid #f7d4e2;border-radius:12px;padding:14px 18px;margin:16px 0;font-size:14px;color:#8c1140">
+  <b>一个限制：</b>有些项目的 README 是用 HTML 写的（比如 <code>sindresorhus/awesome</code>），这类内容会原样显示、不做翻译，以免破坏排版。这类项目的简介仍然有双语对照。
+</div>
+
+<h3>几个操作要点</h3>
+<ul>
+  <li><b>点任意一行</b>（项目名以外的地方）会从右侧滑出详情面板，看 Star 增长曲线和统计。</li>
+  <li><b>点项目名</b>会直接在浏览器打开 GitHub 页面。</li>
+  <li>详情面板里可以一键「加入我的榜单 / 移出」。</li>
+  <li>「我的榜单」支持一次粘贴多个：<code>ollama/ollama, torvalds/linux</code> 或每行一个，也能直接粘贴 GitHub 链接。</li>
+  <li><b>批量总结</b>：点「批量总结」，AI 会给每个关注项目写一句中文定位并标上类别，直接显示在项目名下面。一次调用搞定全部，比逐个点详情页便宜得多；已经有详细总结的项目会自动跳过。需要 DeepSeek Key。</li>
+</ul>
+
+<h3>连通性指示</h3>
+<p>顶栏「刷新」按钮左边有一个小药丸：一个圆点加一个数字，比如 <code>● 92ms</code>。它每分钟自动探测一次 GitHub，点一下可立刻检测。</p>
+<p>进入项目详情后，详情页顶栏最右侧会出现<b>同一个状态</b>（紧凑样式）——因为详情页是全屏的，会盖住主顶栏。两处显示始终一致，点哪个都能触发检测。</p>
+<table>
+  <thead><tr><th>显示</th><th>含义</th><th>该怎么办</th></tr></thead>
+  <tbody>
+    <tr><td><b style="color:#0f8a5f">● 92ms</b></td><td>连通正常（400 毫秒以内）</td><td>不用管</td></tr>
+    <tr><td><b style="color:#b45309">● 860ms</b></td><td>能连上，但延迟偏高</td><td>刷新会变慢，可以调大刷新间隔</td></tr>
+    <tr><td><b style="color:#d6336c">● 断开</b></td><td>连不上 GitHub（断网、DNS、超时）</td><td>鼠标悬停看具体原因，点一下重试</td></tr>
+  </tbody>
+</table>
+<p>探测用的是 <code>rate_limit</code> 接口，<b>不消耗 API 配额</b>，所以放心挂着。鼠标悬停能看到「延迟多少毫秒、多久之前检测的」，点一下会用气泡提示当前结果。</p>
+
+<h4 style="font-size:14px;margin:16px 0 6px">状态变化时会怎样</h4>
+<table>
+  <thead><tr><th>场景</th><th>药丸表现</th><th>额外提示</th></tr></thead>
+  <tbody>
+    <tr><td>一直正常</td><td>绿色圆点，数字随每次检测更新</td><td>无</td></tr>
+    <tr><td>变慢（>400ms）</td><td>圆点变黄，数字变成新的延迟</td><td>无（避免打扰）</td></tr>
+    <tr><td><b>从正常变成断开</b></td><td>圆点变红、文字变「断开」，并<b>外圈闪两下</b></td><td>气泡提示「GitHub 连接已断开：原因」</td></tr>
+    <tr><td><b>从断开恢复</b></td><td>圆点变绿、文字变回延迟数字，同样闪两下</td><td>气泡提示「GitHub 连接已恢复 · N ms」</td></tr>
+    <tr><td>手动点击检测</td><td>检测期间圆点变灰闪烁</td><td>直接气泡给出本次结果（不重复提示）</td></tr>
+  </tbody>
+</table>
+<p>断开期间刷新失败时，页面会继续显示上一次的缓存数据，药丸保持红色，鼠标悬停能看到具体原因（断网 / DNS / 超时）。</p>
+
+<h3>一键下载</h3>
+<p>详情页右上角的「下载」可以把项目拿到本地，不用再跳 GitHub 找 zip：</p>
+<ol class="steps">
+  <li><b>选下载内容</b>：项目如果有 Release，会列出作者编译好的安装包（.exe / .zip 等）和「源码 ZIP」。每个选项下面都写了区别——安装包是能直接用的，源码是原始代码、需要自己装环境。</li>
+  <li><b>选保存位置</b>：点弹窗右下角的「选择位置并下载」后才会弹文件夹选择框——打开软件或进入项目页时不会弹任何东西。选好后开始下载，显示进度、速度，可随时取消。</li>
+  <li><b>自动处理</b>：源码 ZIP 会解压成 <code>owner__repo</code> 文件夹；安装包原样保存。同名目录已存在会自动加 <code>-2</code>，不会覆盖。</li>
+</ol>
+<p>完成后点「打开文件夹」直接跳过去。程序只负责下载和保存，<b>不会自动运行</b>任何东西。</p>
+
+<div class="tip">
+  <b>两点说明：</b>① 网页版（浏览器直接打开 HTML）不支持选目录，会自动降级成浏览器下载；② 不支持断点续传，中断后需要重新下。
+</div>
+
+<h3>DeepSeek 插件榜</h3>
+<ul>
+  <li><b>点任意一行</b>进入插件详情，和全站热榜一致：项目简介、指标、README、增长曲线都在。点<b>项目名</b>则直接打开 GitHub 页面。</li>
+  <li>第一次点开某个插件时会读取它的仓库信息（一次接口调用），之后再看就是本地缓存。</li>
+  <li>列表每次显示 200 个，底部有「再显示 200 个」；搜索和分类筛选覆盖全部 6,896 个，不只是前 200 个。</li>
+  <li><b>加载速度</b>：目录文件 8.7 MB，只有第一次需要下载。之后走本地缓存（约 1.1 MB）直接出图，同时在后台检查更新；6 小时内不会重复请求。</li>
+</ul>
+
+<h3>关注项目的变动提醒</h3>
+<p>每次打开「我的榜单」，程序会把这次拿到的数据和上一次比一遍，在表格上方生成一张变动卡。每条只显示真正值得看的变化：</p>
+<table>
+  <thead><tr><th>标签</th><th>含义</th></tr></thead>
+  <tbody>
+    <tr><td>有新提交</td><td>项目的 <code>pushed_at</code> 变了，说明作者推了新代码</td></tr>
+    <tr><td>★ +N / -N</td><td>Star 涨跌（对比基线）</td></tr>
+    <tr><td>issue +N</td><td>未关闭 issue 变化超过 3 个才显示，避免个位数抖动刷屏</td></tr>
+    <tr><td>N 天未更新</td><td>超过 90 天没有提交，提醒你它可能已经停更</td></tr>
+  </tbody>
+</table>
+<p>「我的榜单」标签上会出现一个红点，表示有新变动还没看过；点进该页红点就消失，但卡片会保留。</p>
+
+<div class="tip">
+  <b>第一天用只会记录基线</b>，第二天开始才有对比。所有数据都来自本机快照，<b>不额外调用任何接口</b>——用的就是打开「我的榜单」时本来就要拉的那一次。
+</div>
+
+<h3>每日简报</h3>
+<p>「每日简报」把当天散落的信息合成一页，<b>随时打开都能看</b>；每天第一次刷新时自动换新，不需要手动生成。</p>
+<table>
+  <thead><tr><th>板块</th><th>内容</th></tr></thead>
+  <tbody>
+    <tr><td>一句话概述</td><td>今天 Top 100 新进几个、掉出几个、关注的项目有几个变动</td></tr>
+    <tr><td>关注项目的变动</td><td>和「我的榜单」顶部那张卡同源，没打开过我的榜单时显示上次的数据并标注</td></tr>
+    <tr><td>榜单异动</td><td>新进榜 / 掉出榜，对比的是<b>昨天最后一次</b>的 Top 100 名单</td></tr>
+    <tr><td>今日涨幅 Top 5</td><td>对比<b>今天第一次刷新</b>时的 Star 数，不是「最近几分钟」的增量</td></tr>
+    <tr><td>新面孔与黑马</td><td>近 90 天创建且已进 Top 100 的项目；以及日均增速前三</td></tr>
+  </tbody>
+</table>
+<p>配了 DeepSeek Key 的话，右上角「AI 点评今日」会用 2~3 句话概括今天的看点。一天只生成一次并缓存，重开不会重复花钱；点「重新点评」才会重算。</p>
+
+<div class="tip">
+  <b>第一天打开会看到「第一次记录」</b>：新进榜和涨幅都需要有昨天的基线，第二天起才有内容。新面孔与黑马不受影响，当天就能看。
+</div>
+
+<h3>快捷键</h3>
+<p>
+  <kbd>R</kbd> 刷新　　<kbd>/</kbd> 搜索　　<kbd>1</kbd>~<kbd>8</kbd> 切换标签　　<kbd>Esc</kbd> 关闭详情 / 清空搜索
+</p>
+<p>
+  <kbd>Tab</kbd> 依次聚焦顶栏、搜索框和列表行（聚焦的行会有浅蓝底和左侧色条）　　<kbd>Enter</kbd> / <kbd>空格</kbd> 打开该行详情
+</p>
+<p style="font-size:13px;color:var(--muted)">
+  只想打开 GitHub 页面时，在聚焦到某一行后按一次 <kbd>Tab</kbd> 移到项目名链接，再按 <kbd>Enter</kbd>。
+</p>
+
+<h2>三、增长曲线是怎么来的（重要）</h2>
+
+<p>GitHub <b>官方不提供历史 Star 数据接口</b>。任何号称能直接画出历史曲线的工具，要么自己长期在采集，要么用的是第三方估算数据。</p>
+
+<p>这个程序的做法是：<b>每次刷新时，把当前 Star 记一个采样点，存在你自己的电脑上。</b>所以：</p>
+
+<ul>
+  <li>曲线<b>从你第一次打开程序起</b>开始累积，之前的历史补不回来。</li>
+  <li>刚打开时显示「曲线正在采集」，属于正常现象。把刷新间隔调到 30 秒，几分钟后就有走势了。</li>
+  <li>用得越久越完整。最多保留 150 个点，越近越密、久远的自动稀释。</li>
+  <li>程序关掉期间不采样，所以曲线会有断档，这是正常的。</li>
+</ul>
+
+<div class="tip">
+  <b>想看「日均增速」但不想等？</b>新项目榜里的「日均」是用 <code>Star ÷ 创建天数</code> 算的，
+  不依赖本地历史，打开就能看，衡量的是项目自创建以来的平均吸星速度。
+</div>
+
+<h2>四、注意事项</h2>
+
+<div class="warn">
+  <div class="t">⓪ 强制结束进程不会丢数据，但可能让下次启动变慢</div>
+  <ul>
+    <li>用任务管理器「结束任务」或断电后，浏览器内核的配置可能损坏，下次启动表现为<b>窗口空白 20~30 秒</b>。</li>
+    <li><b>程序不会再因此清空你的数据</b>。早期版本遇到异常退出会重建整个数据目录，那会把关注列表、译文、API Key 一起删掉——这个行为已经移除。</li>
+    <li>如果窗口长时间空白打不开，用命令行运行 <code>GitHub Hotboard.exe --reset</code>：它会把浏览器配置改名备份（<code>EBWebView.old-时间</code>）后重建，<b>不会删除</b>，确认没用可以自己删掉那个备份目录。</li>
+  </ul>
+</div>
+
+<div class="warn">
+  <div class="t">① 数据不是「秒级实时」</div>
+  <ul>
+    <li>Star 数本身变化很慢，大项目每分钟也就涨个位数，<b>1~2 分钟刷新一次已经足够</b>。</li>
+    <li>GitHub 接口自身有缓存，你看到的数据可能比网页版晚几十秒。</li>
+    <li>排名升降是相对「上一次刷新」比较的，不是 GitHub 官方榜单。</li>
+  </ul>
+</div>
+
+<div class="warn">
+  <div class="t">② 未登录有调用次数限制</div>
+  <ul>
+    <li>搜索接口：<b>10 次 / 分钟</b>。程序每次刷新只用 1 次，正常使用碰不到上限。</li>
+    <li>仓库详情接口：<b>60 次 / 小时</b>。「我的榜单」每个仓库占 1 次，所以它只在打开该页或手动刷新时更新。</li>
+    <li>如果频繁手动刷新又加了很多关注项目，可能会短暂提示「配额用尽」，等一会儿就好。</li>
+    <li>在「关于」页填入一个只读的 GitHub Token，可以把搜索配额提到 30 次/分钟。Token 只存在本机。</li>
+  </ul>
+</div>
+
+<div class="warn">
+  <div class="t">③ 你的数据存在哪里</div>
+  <ul>
+    <li>榜单缓存、曲线历史、我的榜单，全部存在本机，<b>不会上传到任何服务器</b>。</li>
+    <li>exe 版位置：<code>%LOCALAPPDATA%\GitHubHot</code>（可在文件管理器地址栏直接粘贴）。</li>
+    <li>网页版位置：浏览器的本地存储里，和具体浏览器绑定。</li>
+    <li><b>删除这个文件夹 = 清空所有本地数据</b>，曲线和关注列表都会没。想保留就别删。</li>
+    <li>数据是按「地址」隔离的：程序固定用 <code>127.0.0.1:8765</code>。万一这个端口被别的软件占用，程序会退回 8766 并在界面顶部显示黄色提示——那种情况下数据看起来是空的，关掉占用端口的程序再打开就回来了。</li>
+    <li>换电脑、换浏览器、清理浏览器数据，都会导致曲线从零开始。</li>
+  </ul>
+</div>
+
+<div class="warn">
+  <div class="t">④ 端口被占用会导致「数据像丢了」</div>
+  <ul>
+    <li>exe 版会在本机 <code>127.0.0.1:8765</code> 起一个只读服务来加载界面。</li>
+    <li>如果 8765 被别的程序占用，会自动换到 8766、8767……此时浏览器的本地存储相当于换了个「地址」，<b>看起来像数据被清空了</b>。</li>
+    <li>解决办法：关掉占用端口的程序，或关掉多余的本程序窗口，重新打开即可恢复。</li>
+    <li><b>不要同时开多个窗口</b>，第二个实例会换端口，两边数据不互通。</li>
+  </ul>
+</div>
+
+<div class="danger">
+  <div class="t">⑤ 杀毒软件可能误报</div>
+  <ul>
+    <li>exe 是用 PyInstaller 打包的，这类「自解压 + 内嵌浏览器」的程序经常被启发式引擎误判。</li>
+    <li>如果被拦截，把 <code>GitHub Hotboard.exe</code> 加入信任 / 白名单即可。</li>
+    <li>不放心的话，直接用网页版 <code>github-hot.html</code>，功能完全一致。</li>
+  </ul>
+</div>
+
+<h3>其他几条</h3>
+<ul>
+  <li><b>系统要求：</b>Windows 10 1803 及以上 / Windows 11。exe 依赖系统自带的 WebView2 运行时（装了 Edge 就有）。</li>
+  <li><b>断网也能开：</b>会显示上次缓存的榜单，并标注数据时间；恢复网络后自动补上。</li>
+  <li><b>流量：</b>每次刷新约 650 KB。在意流量就把间隔调成 5 分钟或「手动刷新」。</li>
+  <li><b>DeepSeek 插件榜</b>首次加载要下 8.7 MB 的目录文件（几十秒）；之后直接读本地缓存，<b>秒开</b>，并在后台静默更新，不会卡界面。</li>
+  <li><b>插件榜单只是索引，不代表安全审查。</b>装第三方插件前请自行核对来源与权限，尤其是能读写文件、执行命令、操作浏览器的插件。</li>
+  <li><b>本程序只读不写：</b>不会修改你的任何文件，也不会往 GitHub 提交任何内容。</li>
+</ul>
+
+<h2>五、常见问题</h2>
+
+<details>
+  <summary>打开后一直是「正在连接…」或空白？</summary>
+  <p>先检查网络能否访问 <code>api.github.com</code>（公司网络或代理可能拦截）。如果是 exe 版，试试关掉重开；仍不行就用网页版打开 <code>github-hot.html</code> 看是否正常。</p>
+</details>
+
+<details>
+  <summary>提示「接口配额用尽」？</summary>
+  <p>GitHub 对未登录调用的限制。等几分钟会自动恢复，程序会在倒计时结束后重试。频繁手动刷新会更快耗尽配额。</p>
+</details>
+
+<details>
+  <summary>曲线一直是空的？</summary>
+  <p>至少需要 2 个采样点才画得出来。把刷新间隔改成 30 秒，等 1~2 分钟再点开任意一行就能看到。注意程序关掉期间不采样。</p>
+</details>
+
+<details>
+  <summary>「我的榜单」添加后显示「未找到」？</summary>
+  <p>仓库名要写成 <code>owner/repo</code> 的完整形式，区分大小写。私有仓库未登录时读不到。拼写错误也会显示未找到，删掉重新添加即可。</p>
+</details>
+
+<details>
+  <summary>窗口打不开 / 白屏 / 一闪就退？</summary>
+  <p>多半是上次异常退出（强制结束进程、断电）把浏览器内核的配置目录弄坏了。用命令行运行 <code>GitHub Hotboard.exe --reset</code> 即可：它会把配置目录改名备份后重建，<b>不会删你的数据</b>。还不行就用网页版。</p>
+  <p style="font-size:13px;color:var(--muted)">如果界面顶部出现黄色提示条说「运行在 8766」，那是端口被占用导致的，不是配置坏了——关掉占用 8765 的程序再打开即可。</p>
+</details>
+
+<details>
+  <summary>能改成只看我关心的那些项目吗？</summary>
+  <p>可以。用记事本打开 <code>github-hot.html</code>，搜索 <code>const CURATED</code>，按 <code>['owner/repo','分类','一句话点评']</code> 的格式改，保存后刷新页面即可。分类名对应上面的 <code>CATS</code>。或者直接用「我的榜单」，不用改文件。</p>
+</details>
+
+<details>
+  <summary>数据多久更新一次？</summary>
+  <p>由右上角间隔决定，默认 2 分钟。窗口最小化时浏览器会节流定时器，切回来会自动补刷一次。</p>
+</details>
+
+<h2>六、以后怎么更新</h2>
+
+<p>这个程序刻意做成了<b>界面与外壳分离</b>，所以大多数更新不需要重新打包。</p>
+
+<h3>情况 A：只改界面（绝大多数情况）</h3>
+<ol class="steps">
+  <li>拿到新的 <code>github-hot.html</code>（发布包里默认不带这个文件，需要更新时才放）。</li>
+  <li>放到 exe 同目录即可；想更稳妥就放进 <code>web\</code> 子文件夹（优先级更高）。</li>
+  <li>关掉程序重新打开，界面就是新的了。</li>
+</ol>
+
+<p><b>加载优先级：</b><code>web\github-hot.html</code> → 同目录 <code>github-hot.html</code> → exe 内置版本（兜底）。所以放一个外部 HTML 就能覆盖界面，删掉就回到内置版。</p>
+
+<div class="tip">
+  <b>改坏了怎么办？</b>把外面那份 <code>github-hot.html</code> 删掉或改名，程序会自动回退到打包时内置的版本，一定能打开。
+</div>
+
+<h3>情况 B：改了 Python 侧（托盘、通知、窗口行为等）</h3>
+<p>这类改动必须重新打包。双击 <code>打包.bat</code> 即可：脚本会自动检查并安装依赖，约 40 秒后生成的新 exe 会直接覆盖同目录的旧 exe。前提是本机装有 Python 3.10 以上。</p>
+
+<div class="note" style="background:var(--amber-soft);border:1px solid var(--amber-line);border-radius:12px;padding:14px 18px;margin:16px 0;font-size:14px;color:#6b4406">
+  <b>注意：</b>重新打包时 <code>github-hot.html</code> 会被重新嵌入 exe。如果你之前改过它，记得保留修改，否则新 exe 的内置版本会回退到打包时的那份（不过外部文件仍然优先，所以影响不大）。
+</div>
+
+<h3>更新不会丢数据</h3>
+<p>榜单缓存、曲线历史、我的榜单都存在 <code>%LOCALAPPDATA%\GitHubHot</code>，与 exe、html 完全分离。替换程序、升级版本都不影响你已积累的数据。</p>
+
+<h2>七、便携模式与备份迁移</h2>
+
+<h3>便携模式：数据跟着文件夹走</h3>
+<p>exe 同级有一个 <code>portable.txt</code>，只要它在，程序就把数据存到同目录的 <code>data\</code> 里，而不是系统的用户目录。效果是：</p>
+<ul>
+  <li>把整个文件夹拷到 U 盘或另一台电脑，双击 exe，<b>关注列表、曲线、译文、设置全都在</b>。</li>
+  <li>换电脑不用重新配置，也不会出现"数据像丢了"的情况。</li>
+  <li>删掉 <code>portable.txt</code> 就回到系统目录存储（数据不会自动搬回去）。</li>
+</ul>
+
+<div class="tip">
+  <b>从旧版升级过来的？</b>第一次以便携模式启动时，程序会自动把 <code>%LOCALAPPDATA%\GitHubHot</code> 里的旧数据复制到 <code>data\</code>，不需要手动操作。
+</div>
+
+<h3>备份与迁移：导出一个文件</h3>
+<p>「关于」页底部有「导出备份 / 从文件导入」。备份包含：我的榜单、Star 曲线历史、翻译记录、界面设置。</p>
+<ul>
+  <li>导出会生成一个 <code>hotboard-backup-2026-01-01.json</code>，普通项目约十几 KB。</li>
+  <li>导入会<b>覆盖</b>当前全部本地数据，操作前会弹确认框。</li>
+  <li>如果浏览器没弹下载，展开「手动复制备份内容」，把文本框里的内容复制保存成 .json 即可。</li>
+  <li><b>备份不含 GitHub Token 和翻译 Key</b>，换设备后需要重新填写——这是刻意的，避免密钥跟着文件外流。</li>
+</ul>
+
+<h2>八、自己加功能怎么做</h2>
+
+<p>先判断属于哪一类，成本差别很大：</p>
+
+<table>
+  <thead><tr><th>想加的东西</th><th>改哪个文件</th><th>要重新打包吗</th></tr></thead>
+  <tbody>
+    <tr><td>新榜单、新列、新样式、新交互</td><td>github-hot.html</td><td>不用</td></tr>
+    <tr><td>换数据源、改接口、调刷新逻辑</td><td>github-hot.html</td><td>不用</td></tr>
+    <tr><td>托盘、开机自启、系统通知、窗口行为</td><td>app.py</td><td>要</td></tr>
+    <tr><td>要用新的第三方库</td><td>build.py + app.py</td><td>要</td></tr>
+  </tbody>
+</table>
+
+<h3>A 类：纯界面改动（最常见）</h3>
+<ol class="steps">
+  <li>先复制一份 <code>github-hot.html</code> 做备份。</li>
+  <li>用编辑器打开（VS Code、Notepad++ 都行），<b>保存时必须是 UTF-8</b>，否则中文会乱码。</li>
+  <li>改完先双击这个 HTML，用浏览器打开验证——改坏了浏览器会直接告诉你哪一行报错。</li>
+  <li>确认没问题，关掉程序重新打开，exe 会自动加载改好的版本。</li>
+</ol>
+
+<div class="tip">
+  <b>要看报错？</b>用命令行运行 <code>GitHub Hotboard.exe --debug</code>，然后在窗口里右键 → 检查，就能打开开发者工具看控制台、查元素、改样式试效果。
+</div>
+
+<p>文件里的结构大致是这样，按关键字搜索就能定位：</p>
+
+<table>
+  <thead><tr><th>搜索这个</th><th>它的作用</th></tr></thead>
+  <tbody>
+    <tr><td>CATS / CURATED</td><td>分类名称和精选清单，纯数据，改起来最安全</td></tr>
+    <tr><td>const S =</td><td>全局状态（当前标签、排序、缓存等）</td></tr>
+    <tr><td>searchRepos / getRepo</td><td>所有 GitHub 接口请求都从这里发</td></tr>
+    <tr><td>refresh / fillCategories</td><td>刷新流程：先出首屏，再后台补全</td></tr>
+    <tr><td>renderTop / renderNew /<br>renderCat / renderDsh / renderMine</td><td>五个页面各自的渲染函数</td></tr>
+    <tr><td>histPush / pointsOf /<br>sparkSVG / bigChart</td><td>增长曲线的采样与绘制</td></tr>
+    <tr><td>switchView</td><td>标签页切换</td></tr>
+    <tr><td>addEventListener</td><td>按钮、快捷键、点击事件的绑定</td></tr>
+  </tbody>
+</table>
+
+<h3>B 类：需要 Python 侧的能力</h3>
+<p>比如「最小化到托盘后继续采样」「有新项目进榜时弹系统通知」「开机自启」。这类功能浏览器做不到，要改 <code>app.py</code>，改完双击 <code>打包.bat</code> 重新生成 exe。</p>
+
+<h3>C 类：要引入新的第三方库</h3>
+<p>先在 <code>build.py</code> 的 <code>ensure()</code> 里加一行（打包时会自动安装），再视情况补 <code>--collect-all</code> 参数把库的数据文件一起打进去。这一步最容易出问题，建议改之前先备份 build.py。</p>
+
+<div class="note" style="background:var(--amber-soft);border:1px solid var(--amber-line);border-radius:12px;padding:14px 18px;margin:16px 0;font-size:14px;color:#6b4406">
+  <b>一条经验：</b>改动前先备份，出问题就用备份覆盖回去。因为界面是外部文件优先，只要把 <code>github-hot.html</code> 删掉，程序就退回内置版本，永远不会彻底打不开。
+</div>
+
+<h2>九、文件清单</h2>
+
+<table>
+  <thead><tr><th>文件</th><th>作用</th></tr></thead>
+  <tbody>
+    <tr><td>GitHub Hotboard.exe</td><td>主程序。双击运行，整个软件就这一个文件。</td></tr>
+    <tr><td>使用说明.html</td><td>本文件。</td></tr>
+    <tr><td>portable.txt</td><td>便携模式开关。存在时数据存在同目录的 <code>data\</code>，整个文件夹拷走即用。</td></tr>
+    <tr><td>更新记录.txt</td><td>每次版本改动的清单，带连续序号（#01、#02…），顶部写着累计更新次数，可用来追溯改了什么。</td></tr>
+    <tr><td>data\</td><td>便携模式下的数据目录，首次运行自动生成（约 14 MB，含浏览器内核配置）。</td></tr>
+  </tbody>
+</table>
+
+<p style="font-size:13.5px;color:var(--muted);margin-top:14px">
+  发布包里只有上面 5 项，<b>exe 本身已包含全部代码和界面</b>，不依赖任何其它文件。
+  打包用的源码（app.py、build.py、打包.bat、app.ico、github-hot.html）放在单独的「源码」文件夹里，日常使用不需要。
+</p>
+
+<footer>
+  GitHub 热榜 v1.1 · 数据来源：GitHub REST API 与 awesome-dsh-plugin.com<br>
+  本程序不收集任何用户数据，所有配置与历史仅保存在本机。
+</footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,5 @@
+# Runtime dependency
+pywebview>=6.0
+
+# Build only (used by build.py / build.bat)
+pyinstaller>=6.0

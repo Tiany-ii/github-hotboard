@@ -1,0 +1,25 @@
+# Build artifacts
+build/
+dist/
+*.spec
+*.exe
+
+# Local runtime data (WebView2 profile, cache, user keys)
+data/
+web/
+portable.txt
+*.log
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
