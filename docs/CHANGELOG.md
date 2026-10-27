@@ -6,6 +6,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-10-27
+
+### Added
+
+- The window re-centres itself when the display changes while running (resolution, scaling,
+  taskbar, monitor switch). The work area is polled every 3 seconds; the window is only touched
+  when it actually changes, so a window you moved by hand stays where you put it.
+
+### Fixed
+
+- The work area is reported in logical pixels before the GUI starts but in physical pixels once
+  WebView2 makes the process DPI-aware (1536x928 vs 3072x1856 at DPI 192 here). Mixing the two
+  spaces threw the window off-screen; values are now scaled by `GetDpiForSystem() / 96`.
+
+### Verified
+
+- Geometry checked against nine simulated work areas from 800x520 to 2560x1400, including a
+  monitor offset: every case fits inside the work area and is centred to the pixel.
+- Window measured 12 seconds after launch: `(77,46) 1382x835`, no drift, watcher never misfired.
+
 ## [1.2.4] - 2026-10-27
 
 ### Fixed
@@ -107,7 +127,8 @@ First public release.
 - No automated tests or CI.
 - Binary is not code-signed, so SmartScreen warns on first run.
 
-[Unreleased]: https://github.com/Tiany-ii/github-hotboard/compare/v1.2.4...HEAD
+[Unreleased]: https://github.com/Tiany-ii/github-hotboard/compare/v1.3.0...HEAD
+[1.3.0]: https://github.com/Tiany-ii/github-hotboard/releases/tag/v1.3.0
 [1.2.4]: https://github.com/Tiany-ii/github-hotboard/releases/tag/v1.2.4
 [1.2.3]: https://github.com/Tiany-ii/github-hotboard/releases/tag/v1.2.3
 [1.2.2]: https://github.com/Tiany-ii/github-hotboard/releases/tag/v1.2.2

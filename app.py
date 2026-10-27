@@ -25,7 +25,7 @@ import urllib.parse
 
 APP_TITLE = "GitHub Hotboard"
 APP_FILE = "github-hot.html"
-__version__ = "1.2.4"
+__version__ = "1.3.0"
 PORT_FROM, PORT_TO = 8765, 8785
 
 INDEX_PATH = ""
@@ -446,19 +446,36 @@ class Downloader:
 
 
 def work_area():
-    """主屏可用区域（排除任务栏），返回 (x, y, w, h)。
-    与 pywebview 建窗用同一坐标空间，所以不做 DPI 换算。"""
+    """主屏可用区域（排除任务栏），返回 (x, y, w, h)，单位与 pywebview 建窗一致（逻辑像素）。
+
+    坑：GUI 起来之前进程是 DPI-unaware，系统把坐标虚拟化成逻辑像素；
+    WebView2 初始化后进程变成 DPI-aware，同一 API 改回物理像素（本机 3072x1856 / DPI 192）。
+    不换算就会把物理像素当逻辑像素传给窗口，窗口直接跑到屏幕外。"""
+    rect = None
     try:
         import ctypes
         from ctypes import wintypes
-        rect = wintypes.RECT()
+        r = wintypes.RECT()
         # SPI_GETWORKAREA = 0x0030
-        if ctypes.windll.user32.SystemParametersInfoW(0x0030, 0, ctypes.byref(rect), 0):
-            w, h = rect.right - rect.left, rect.bottom - rect.top
-            if w > 320 and h > 240:
-                return rect.left, rect.top, w, h
+        if ctypes.windll.user32.SystemParametersInfoW(0x0030, 0, ctypes.byref(r), 0):
+            rect = (r.left, r.top, r.right - r.left, r.bottom - r.top)
     except Exception:
-        pass
+        rect = None
+
+    if rect and rect[2] > 320 and rect[3] > 240:
+        scale = 1.0
+        try:
+            import ctypes
+            dpi = ctypes.windll.user32.GetDpiForSystem()
+            if dpi:
+                scale = dpi / 96.0
+        except Exception:
+            scale = 1.0
+        if scale > 1.01:
+            return (int(rect[0] / scale), int(rect[1] / scale),
+                    int(rect[2] / scale), int(rect[3] / scale))
+        return rect
+
     try:
         scr = webview.screens[0]
         return 0, 0, int(scr.width), int(scr.height)
@@ -479,6 +496,28 @@ def window_geometry():
     x = ax + max(0, (aw - w) // 2)
     y = ay + max(0, (ah - h) // 2)
     return w, h, x, y
+
+
+def watch_display(window):
+    """分辨率 / 任务栏 / 缩放变化后自动重新居中。
+    轮询可用区域比监听 WM_DISPLAYCHANGE 简单，且对多屏切换同样有效。"""
+    last = work_area()
+    while True:
+        time.sleep(3)
+        try:
+            cur = work_area()
+        except Exception:
+            continue
+        if cur == last:
+            continue
+        last = cur
+        g = window_geometry()
+        try:
+            window.resize(g[0], g[1])
+            window.move(g[2], g[3])
+            log("display changed %s -> recentre %dx%d at (%d,%d)" % (cur, g[0], g[1], g[2], g[3]))
+        except Exception as e:
+            log("recentre failed: %s" % e)
 
 
 def main():
@@ -649,7 +688,8 @@ def main():
     if debug:
         log("debug 模式：界面来源=%s 端口=%d（右键可打开检查器）" % (INDEX_SOURCE, port))
 
-    webview.start(gui="edgechromium", private_mode=False, storage_path=store, debug=debug)
+    webview.start(watch_display, window, gui="edgechromium", private_mode=False,
+                  storage_path=store, debug=debug)
 
     # 正常关闭才清除标记
     if shown["ok"]:
