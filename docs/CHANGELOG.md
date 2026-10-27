@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.1] - 2026-10-27
+
+### Fixed
+
+- The detail sidebar stopped following the scroll, leaving an empty column on the right. `position:
+  sticky` was applied directly to the grid item, which some WebView2 builds ignore; it now lives on
+  an inner wrapper while the grid item stretches to full row height.
+- When the sidebar has no visible cards, the content column now takes the full width instead of
+  reserving an empty 300px column.
+
 ## [1.2.0] - 2026-10-27
 
 ### Changed
@@ -63,7 +73,8 @@ First public release.
 - No automated tests or CI.
 - Binary is not code-signed, so SmartScreen warns on first run.
 
-[Unreleased]: https://github.com/Tiany-ii/github-hotboard/compare/v1.2.0...HEAD
+[Unreleased]: https://github.com/Tiany-ii/github-hotboard/compare/v1.2.1...HEAD
+[1.2.1]: https://github.com/Tiany-ii/github-hotboard/releases/tag/v1.2.1
 [1.2.0]: https://github.com/Tiany-ii/github-hotboard/releases/tag/v1.2.0
 [1.1.1]: https://github.com/Tiany-ii/github-hotboard/releases/tag/v1.1.1
 [1.1.0]: https://github.com/Tiany-ii/github-hotboard/releases/tag/v1.1.0
