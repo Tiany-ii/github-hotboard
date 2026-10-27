@@ -29,6 +29,8 @@
     --s-0:2px; --s-1:4px; --s-2:8px; --s-3:12px; --s-4:16px; --s-5:24px;
     /* 动效：反馈 / 状态切换 / 转场 */
     --t-fast:.12s; --t-base:.2s; --t-slow:.28s; --ease:cubic-bezier(.4,0,.2,1);
+    /* 页面内容宽度：列表页与详情页共用，避免切换时左右边界跳动 */
+    --content-max:1500px;
     /* 实心强调色：与文字用的 --accent 分开，深色下白字需要更深的底 */
     --accent-solid:#245ec7; --accent-solid-2:#1e4fa8;
     /* ============================================= */
@@ -159,7 +161,7 @@
   .tab.active .badge{background:var(--accent-soft);color:var(--accent)}
 
   /* ---------------- LAYOUT ---------------- */
-  main{padding:var(--s-4) var(--s-5) 40px;max-width:1500px;margin:0 auto}
+  main{padding:var(--s-4) var(--s-5) 40px;max-width:var(--content-max);margin:0 auto}
   .toolbar{display:flex;align-items:center;gap:var(--s-2);flex-wrap:wrap;margin-bottom:14px}
   .search{
     position:relative;flex:1;min-width:200px;max-width:340px;
@@ -300,7 +302,7 @@
     overflow-y:auto;overscroll-behavior:contain;
   }
   .drawer.on{transform:none}
-  .dwrap{max-width:1120px;margin:0 auto;padding:0 24px 60px}
+  .dwrap{max-width:var(--content-max);margin:0 auto;padding:0 var(--s-5) 60px}
 
   .dtop{
     position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:var(--s-2);flex-wrap:wrap;
@@ -1262,7 +1264,7 @@ const S = {
 };
 
 /* 唯一版本号来源：app.py 的 --version 也从这里读 */
-const APP_VERSION = "1.1.1";
+const APP_VERSION = "1.2.0";
 
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => Array.from(document.querySelectorAll(s));

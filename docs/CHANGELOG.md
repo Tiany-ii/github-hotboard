@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-10-27
+
+### Changed
+
+- The detail view now uses the same content width as the list view (`--content-max: 1500px`).
+  It was capped at 1120px, which left a 200px empty band on each side of a wide window and made
+  the layout jump when opening a project.
+
 ## [1.1.1] - 2026-10-27
 
 ### Fixed
@@ -55,7 +63,8 @@ First public release.
 - No automated tests or CI.
 - Binary is not code-signed, so SmartScreen warns on first run.
 
-[Unreleased]: https://github.com/Tiany-ii/github-hotboard/compare/v1.1.1...HEAD
+[Unreleased]: https://github.com/Tiany-ii/github-hotboard/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/Tiany-ii/github-hotboard/releases/tag/v1.2.0
 [1.1.1]: https://github.com/Tiany-ii/github-hotboard/releases/tag/v1.1.1
 [1.1.0]: https://github.com/Tiany-ii/github-hotboard/releases/tag/v1.1.0
 [1.0.0]: https://github.com/Tiany-ii/github-hotboard/releases/tag/v1.0.0
