@@ -325,8 +325,7 @@
   .dcols{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:var(--s-4);align-items:start}
   /* sticky 放在内层 div 上：直接给 grid item 加 sticky 在旧版 WebView2 里会失效，侧栏会跟着滚走 */
   .dside{position:relative;min-width:0;align-self:stretch}
-  .dside-in{position:sticky;top:64px;max-height:calc(100vh - 80px);overflow-y:auto;
-    overscroll-behavior:contain;padding-bottom:2px}
+  .dside-in{position:sticky;top:64px}
   /* 侧栏没有任何内容时，正文独占整行，不留空列 */
   .dcols.solo{grid-template-columns:minmax(0,1fr)}
   .dcols.solo .dside{display:none}
@@ -367,10 +366,11 @@
   .dreadme img{max-width:100%;max-height:420px;object-fit:contain;border-radius:var(--r-xs);margin:6px 0}
   .dreadme blockquote{margin:10px 0;padding:6px 14px;border-left:3px solid var(--line);color:var(--muted)}
   .dreadme p,.dreadme li{overflow-wrap:break-word}
-  /* 表格内容可能比栏宽（README 里的多列链接表），让它自己滚，不要撑破抽屉 */
-  .dreadme table{display:block;max-width:100%;overflow-x:auto;border-collapse:collapse;
-    margin:10px 0;font-size:var(--fs-3)}
-  .dreadme th,.dreadme td{border:1px solid var(--line);padding:6px 10px;overflow-wrap:anywhere}
+  /* 表格按容器宽度排版：单元格内容自动折行，不做横向滚动 */
+  .dreadme table{display:table;width:100%;max-width:100%;table-layout:auto;
+    border-collapse:collapse;margin:10px 0;font-size:var(--fs-3)}
+  .dreadme th,.dreadme td{border:1px solid var(--line);padding:6px 10px;
+    overflow-wrap:anywhere;word-break:break-word}
   .dreadme a{color:var(--accent)}
   .dreadme hr{border:none;border-top:1px solid var(--line);margin:16px 0}
   .dstate{padding:44px 20px;text-align:center;color:var(--muted);font-size:var(--fs-3);line-height:1.8}
@@ -509,7 +509,7 @@
     .histats{grid-template-columns:1fr 1fr}
     .dcharts{grid-template-columns:1fr}
     .dcols{grid-template-columns:1fr}
-    .dside-in{position:static;max-height:none;overflow:visible}
+    .dside-in{position:static}
     .dstats{grid-template-columns:repeat(3,1fr)}
     .dwrap{padding:0 14px 40px}
     .dreadme{padding:16px}
@@ -674,7 +674,7 @@
   }
   @media (max-width:1000px){
     .dcols{grid-template-columns:minmax(0,1fr)}
-    .dside-in{position:static;max-height:none;overflow:visible}
+    .dside-in{position:static}
     .dcharts{grid-template-columns:1fr}
   }
 
@@ -1270,7 +1270,7 @@ const S = {
 };
 
 /* 唯一版本号来源：app.py 的 --version 也从这里读 */
-const APP_VERSION = "1.2.1";
+const APP_VERSION = "1.2.2";
 
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => Array.from(document.querySelectorAll(s));

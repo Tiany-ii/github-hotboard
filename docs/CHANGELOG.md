@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.2] - 2026-10-27
+
+### Fixed
+
+- README tables wrap to the container width again instead of scrolling horizontally. The previous
+  fix turned tables into their own scroll box, which forced readers to drag sideways to see a row.
+  Cells now break long words, so even a 200-character URL fits.
+- The detail sidebar could collapse to zero height in some WebView2 builds (`max-height` +
+  `overflow` on the sticky wrapper), leaving an empty right column.
+
 ## [1.2.1] - 2026-10-27
 
 ### Fixed
@@ -73,7 +83,8 @@ First public release.
 - No automated tests or CI.
 - Binary is not code-signed, so SmartScreen warns on first run.
 
-[Unreleased]: https://github.com/Tiany-ii/github-hotboard/compare/v1.2.1...HEAD
+[Unreleased]: https://github.com/Tiany-ii/github-hotboard/compare/v1.2.2...HEAD
+[1.2.2]: https://github.com/Tiany-ii/github-hotboard/releases/tag/v1.2.2
 [1.2.1]: https://github.com/Tiany-ii/github-hotboard/releases/tag/v1.2.1
 [1.2.0]: https://github.com/Tiany-ii/github-hotboard/releases/tag/v1.2.0
 [1.1.1]: https://github.com/Tiany-ii/github-hotboard/releases/tag/v1.1.1

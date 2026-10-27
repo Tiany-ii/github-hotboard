@@ -1,6 +1,6 @@
 ﻿GitHub Hotboard · 更新记录
 ============================================================
-共 33 次更新 · 最新 2026-10-27 20:12
+共 34 次更新 · 最新 2026-10-27 20:55
 
 记录规则：每次更新后在文件末尾追加一条，不修改已有内容。
 格式：#序号 [日期 时间] 一句话概括，下面列主要改动点。
@@ -246,3 +246,11 @@
 - 改为 .dside 撑满行高（align-self:stretch）+ 内层 .dside-in 承担 sticky，并限制 max-height 让过高的侧栏自己滚
 - 新增 .dcols.solo：侧栏没有任何可见卡片时，正文独占整行，不再保留空列
 - 实测 1920/1536/1440/1280/1080 滚到 1500px 后侧栏仍停在 top:64；1000/820 以下按单列布局，正文占满
+
+------------------------------------------------------------
+#34 [2026-10-27 20:55] v1.2.2 表格改为自动折行，侧栏不再被裁成 0 高
+- 根因一：上一版给 .dreadme table 加了 display:block + overflow-x:auto，表格变成横向滚动条，要左右拖才能看全
+- 根因二：.dside-in 上的 max-height:calc(100vh - 80px) + overflow-y:auto，在某些 WebView2 下把侧栏裁成 0 高，整列空白
+- 表格改回 display:table + width:100%，单元格加 overflow-wrap:anywhere 与 word-break:break-word，按容器宽度自然折行
+- 侧栏去掉 max-height / overflow，只保留内层 sticky（.dside-in）
+- 实测 1535 / 1080 / 820：抽屉、表格、页面的 scrollWidth 全部等于 clientWidth；200 字符的超长 URL 也不撑破
