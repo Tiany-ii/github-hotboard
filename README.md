@@ -2,6 +2,7 @@
 
 **A local dashboard for GitHub trending — what to look at today, on one screen.**
 
+[![Release](https://img.shields.io/github/v/release/Tiany-ii/github-hotboard)](https://github.com/Tiany-ii/github-hotboard/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Windows%2010%2B-0078d4.svg)](#requirements)
 [![No telemetry](https://img.shields.io/badge/telemetry-none-brightgreen.svg)](#data-sources--privacy)
@@ -144,7 +145,7 @@ token.
 ## Run from source
 
 ```bash
-git clone https://github.com/<you>/github-hotboard.git
+git clone https://github.com/Tiany-ii/github-hotboard.git
 cd github-hotboard
 python -m pip install -r requirements.txt
 python app.py

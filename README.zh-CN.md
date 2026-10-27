@@ -2,6 +2,7 @@
 
 **一个跑在本地桌面的 GitHub 热榜看板：今天该看什么，一屏看完。**
 
+[![Release](https://img.shields.io/github/v/release/Tiany-ii/github-hotboard)](https://github.com/Tiany-ii/github-hotboard/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Windows%2010%2B-0078d4.svg)](#系统要求)
 [![No telemetry](https://img.shields.io/badge/telemetry-none-brightgreen.svg)](#数据来源与隐私)
@@ -134,7 +135,7 @@ WebView2 配置目录（`%LOCALAPPDATA%\GitHubHot`，便携模式为 `./data`）
 ## 从源码运行
 
 ```bash
-git clone https://github.com/<you>/github-hotboard.git
+git clone https://github.com/Tiany-ii/github-hotboard.git
 cd github-hotboard
 python -m pip install -r requirements.txt
 python app.py
