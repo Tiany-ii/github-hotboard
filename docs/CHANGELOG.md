@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.1] - 2026-10-27
+
+### Fixed
+
+- Wide tables in a README no longer widen the detail drawer. A README with a multi-column
+  link table used to expand the content to ~1,600px inside a ~750px column, which produced a
+  horizontal scrollbar and clipped text. Tables now scroll inside their own box, and long URLs
+  wrap instead of pushing the layout.
+
 ## [1.1.0] - 2026-10-27
 
 ### Added
@@ -46,6 +55,7 @@ First public release.
 - No automated tests or CI.
 - Binary is not code-signed, so SmartScreen warns on first run.
 
-[Unreleased]: https://github.com/Tiany-ii/github-hotboard/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/Tiany-ii/github-hotboard/compare/v1.1.1...HEAD
+[1.1.1]: https://github.com/Tiany-ii/github-hotboard/releases/tag/v1.1.1
 [1.1.0]: https://github.com/Tiany-ii/github-hotboard/releases/tag/v1.1.0
 [1.0.0]: https://github.com/Tiany-ii/github-hotboard/releases/tag/v1.0.0

@@ -358,8 +358,11 @@
   .dreadme pre code{background:none;padding:0;font-size:var(--fs-2);line-height:1.6}
   .dreadme img{max-width:100%;max-height:420px;object-fit:contain;border-radius:var(--r-xs);margin:6px 0}
   .dreadme blockquote{margin:10px 0;padding:6px 14px;border-left:3px solid var(--line);color:var(--muted)}
-  .dreadme table{border-collapse:collapse;margin:10px 0;font-size:var(--fs-3)}
-  .dreadme th,.dreadme td{border:1px solid var(--line);padding:6px 10px}
+  .dreadme p,.dreadme li{overflow-wrap:break-word}
+  /* 表格内容可能比栏宽（README 里的多列链接表），让它自己滚，不要撑破抽屉 */
+  .dreadme table{display:block;max-width:100%;overflow-x:auto;border-collapse:collapse;
+    margin:10px 0;font-size:var(--fs-3)}
+  .dreadme th,.dreadme td{border:1px solid var(--line);padding:6px 10px;overflow-wrap:anywhere}
   .dreadme a{color:var(--accent)}
   .dreadme hr{border:none;border-top:1px solid var(--line);margin:16px 0}
   .dstate{padding:44px 20px;text-align:center;color:var(--muted);font-size:var(--fs-3);line-height:1.8}
@@ -1259,7 +1262,7 @@ const S = {
 };
 
 /* 唯一版本号来源：app.py 的 --version 也从这里读 */
-const APP_VERSION = "1.1.0";
+const APP_VERSION = "1.1.1";
 
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => Array.from(document.querySelectorAll(s));

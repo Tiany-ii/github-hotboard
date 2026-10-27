@@ -25,7 +25,7 @@ import urllib.parse
 
 APP_TITLE = "GitHub Hotboard"
 APP_FILE = "github-hot.html"
-__version__ = "1.1.0"
+__version__ = "1.1.1"
 PORT_FROM, PORT_TO = 8765, 8785
 
 INDEX_PATH = ""
