@@ -936,6 +936,11 @@
         <tbody id="tbSum"></tbody>
       </table>
     </div></div>
+
+    <p style="font-size:var(--fs-2);color:var(--faint);margin:14px 0 0;line-height:1.7">
+      译文与总结会缓存在本机，避免重复花钱。<b>超过 30 天没有查看的条目会在下次启动时自动清理</b>，
+      另外译文最多保留 20 个项目、总结最多 40 条。想立刻腾空间，用上面的「清空译文 / 清空总结」。
+    </p>
   </section>
 
   <!-- ========== 关于 ========== -->
@@ -1254,7 +1259,7 @@ const S = {
 };
 
 /* 唯一版本号来源：app.py 的 --version 也从这里读 */
-const APP_VERSION = "1.0.0";
+const APP_VERSION = "1.1.0";
 
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => Array.from(document.querySelectorAll(s));
@@ -2925,17 +2930,55 @@ function cachePut(kind, name, v){
   catch(e){ try{ localStorage.removeItem("ghhot.cache.v1"); }catch(_){} }
 }
 function sigOf(t){ return t.length + ":" + t.slice(0, 64); }
+
+/* ---------- 缓存过期清理 ---------- */
+/* 译文与总结都是花钱换来的，但也不能永久占着。超过 N 天没被查看就丢掉。 */
+const CACHE_TTL_DAYS = 30;
+
+function cachePrune(force){
+  const now = Date.now();
+  const last = +(localStorage.getItem("ghhot.prune.v1") || 0);
+  if(!force && now - last < 864e5) return -1;   // 每天最多跑一次
+  const ttl = CACHE_TTL_DAYS * 864e5;
+  let removed = 0;
+
+  ["ghhot.tr.v1", "ghhot.sum.v1", "ghhot.sumline.v1", "ghhot.desc.v1"].forEach(key => {
+    let all;
+    try{ all = JSON.parse(localStorage.getItem(key) || "{}"); }catch(e){ return; }
+    if(!all || typeof all !== "object") return;
+    let dirty = false;
+    Object.keys(all).forEach(n => {
+      const e = all[n];
+      if(!e || typeof e !== "object") return;          // 旧格式（纯字符串）没有时间，跳过
+      const seen = e.at || e.t || 0;
+      if(seen && now - seen > ttl){ delete all[n]; removed++; dirty = true; }
+    });
+    if(dirty){ try{ localStorage.setItem(key, JSON.stringify(all)); }catch(e){} }
+  });
+
+  try{ localStorage.setItem("ghhot.prune.v1", String(now)); }catch(e){}
+  return removed;
+}
 function loadTrCache(name, txt){
   try{
-    const e = JSON.parse(localStorage.getItem("ghhot.tr.v1") || "{}")[name];
-    if(e && e.sig === sigOf(txt)) return e.zh;
+    const all = JSON.parse(localStorage.getItem("ghhot.tr.v1") || "{}");
+    const e = all[name];
+    if(e && e.sig === sigOf(txt)){
+      // 记下最近一次使用，过期清理靠它判断（一天最多写一次，避免频繁落盘）
+      if(!e.at || Date.now() - e.at > 864e5){
+        e.at = Date.now();
+        try{ localStorage.setItem("ghhot.tr.v1", JSON.stringify(all)); }catch(_){}
+      }
+      return e.zh;
+    }
   }catch(err){}
   return null;
 }
 function saveTrCache(name, txt, zh, engine, total){
   try{
     const all = JSON.parse(localStorage.getItem("ghhot.tr.v1") || "{}");
-    all[name] = { sig: sigOf(txt), zh: zh, t: Date.now(), e: engine || "", total: total || 0 };
+    const now = Date.now();
+    all[name] = { sig: sigOf(txt), zh: zh, t: now, at: now, e: engine || "", total: total || 0 };
     const keys = Object.keys(all);
     if(keys.length > 20){
       keys.sort((a, b) => all[a].t - all[b].t);
@@ -3401,13 +3444,18 @@ async function translateDescOnce(mode){
   if(!en || ZH_DESC[d.name] || d.descZh) return;
   let cache = {};
   try{ cache = JSON.parse(localStorage.getItem("ghhot.desc.v1") || "{}"); }catch(e){}
-  if(cache[d.name]){ d.descZh = cache[d.name]; return; }
+  const hit = cache[d.name];
+  if(hit){
+    // 旧格式是纯字符串，新格式是 { zh, t }
+    d.descZh = (typeof hit === "string") ? hit : (hit.zh || "");
+    if(d.descZh) return;
+  }
   try{
     const zh = mode === "free" ? await freeTranslate(en) : ((await callDeepSeek([en]))[0] || "");
     if(!S.detail || S.detail.name !== d.name) return;
     d.descZh = zh || "";
     if(d.descZh){
-      cache[d.name] = d.descZh;
+      cache[d.name] = { zh: d.descZh, t: Date.now() };
       try{ localStorage.setItem("ghhot.desc.v1", JSON.stringify(cache)); }catch(e){}
     }
   }catch(e){ /* 简介翻译失败不影响正文 */ }
@@ -4765,6 +4813,7 @@ document.addEventListener("visibilitychange", () => {
   const ver = $("#appVer");
   if(ver) ver.textContent = "版本 v" + APP_VERSION;
   loadCfg();
+  cachePrune();
   loadSnap();
   histLoad();
   mineLoad();

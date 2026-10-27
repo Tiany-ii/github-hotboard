@@ -6,6 +6,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-10-27
+
+### Added
+
+- **Cache expiry.** Translation and AI summary entries that have not been opened for 30 days are
+  removed on the next launch. "Opened" means visiting that project's detail page, so projects you
+  actually use are never evicted. Cleanup runs at most once per day.
+
+### Changed
+
+- Cached translations now record a last-access time; the description cache stores
+  `{ zh, t }` instead of a bare string (old entries are still read correctly).
+
 ## [1.0.0] - 2026-10-27
 
 First public release.
@@ -33,5 +46,6 @@ First public release.
 - No automated tests or CI.
 - Binary is not code-signed, so SmartScreen warns on first run.
 
-[Unreleased]: https://github.com/<you>/github-hotboard/compare/v1.0.0...HEAD
-[1.0.0]: https://github.com/<you>/github-hotboard/releases/tag/v1.0.0
+[Unreleased]: https://github.com/Tiany-ii/github-hotboard/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/Tiany-ii/github-hotboard/releases/tag/v1.1.0
+[1.0.0]: https://github.com/Tiany-ii/github-hotboard/releases/tag/v1.0.0
