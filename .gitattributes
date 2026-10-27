@@ -4,6 +4,9 @@
 *.bat text eol=crlf
 *.cmd text eol=crlf
 
+# 更新记录.txt 要能在 Windows 记事本里正常显示，保留 CRLF
+docs/更新记录.txt text eol=crlf
+
 *.png binary
 *.ico binary
 *.exe binary

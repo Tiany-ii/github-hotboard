@@ -193,7 +193,8 @@ github-hotboard/
 ├─ requirements.txt
 ├─ docs/
 │  ├─ 使用说明.html     # user guide (Chinese)
-│  ├─ CHANGELOG.md
+│  ├─ 更新记录.txt      # detailed change log (Chinese, every commit)
+│  ├─ CHANGELOG.md     # release-level summary (Keep a Changelog)
 │  └─ images/          # screenshots used in this README
 └─ LICENSE
 ```

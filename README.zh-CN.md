@@ -182,7 +182,8 @@ github-hotboard/
 ├─ requirements.txt
 ├─ docs/
 │  ├─ 使用说明.html     # 用户手册
-│  ├─ CHANGELOG.md
+│  ├─ 更新记录.txt      # 详细更新流水（每次改动都记）
+│  ├─ CHANGELOG.md     # 版本级摘要（Keep a Changelog）
 │  └─ images/          # README 用到的截图
 └─ LICENSE
 ```
