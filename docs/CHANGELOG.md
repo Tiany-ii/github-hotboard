@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.3] - 2026-10-27
+
+### Fixed
+
+- **HTML tables were never closed**, so the browser nested the entire rest of the README inside the
+  last cell. A 9-row table became 1,600px wide, pushed the sidebar off-screen and made the page look
+  like it overflowed. The parser now reads an HTML table up to `</table>` and rebuilds its rows.
+- Side effect of the same bug: the table of contents only listed a handful of headings, because the
+  headings after the table were swallowed into it.
+
 ## [1.2.2] - 2026-10-27
 
 ### Fixed
@@ -83,7 +93,8 @@ First public release.
 - No automated tests or CI.
 - Binary is not code-signed, so SmartScreen warns on first run.
 
-[Unreleased]: https://github.com/Tiany-ii/github-hotboard/compare/v1.2.2...HEAD
+[Unreleased]: https://github.com/Tiany-ii/github-hotboard/compare/v1.2.3...HEAD
+[1.2.3]: https://github.com/Tiany-ii/github-hotboard/releases/tag/v1.2.3
 [1.2.2]: https://github.com/Tiany-ii/github-hotboard/releases/tag/v1.2.2
 [1.2.1]: https://github.com/Tiany-ii/github-hotboard/releases/tag/v1.2.1
 [1.2.0]: https://github.com/Tiany-ii/github-hotboard/releases/tag/v1.2.0

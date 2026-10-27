@@ -1270,7 +1270,7 @@ const S = {
 };
 
 /* 唯一版本号来源：app.py 的 --version 也从这里读 */
-const APP_VERSION = "1.2.2";
+const APP_VERSION = "1.2.3";
 
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => Array.from(document.querySelectorAll(s));
@@ -3087,6 +3087,34 @@ function mdBlocks(md){
         html += "</tbody></table>";
         out.push({ t: "html", html: html });
       }
+      continue;
+    }
+
+    /* HTML 表格：单元格之间常有空行，必须一直读到 </table>，否则表格不闭合，
+       后面的整篇内容都会被浏览器塞进最后一个 <td>（曾导致表格宽 1576px、右侧留白） */
+    if(/^\s*<table\b/i.test(line)){
+      const buf = [];
+      while(i < lines.length){
+        buf.push(lines[i]); i++;
+        if(/<\/table\s*>/i.test(buf.join("\n"))) break;
+      }
+      const doc = new DOMParser().parseFromString(buf.join("\n"), "text/html");
+      const tbl = doc.querySelector("table");
+      let html = "<table>";
+      if(tbl){
+        [...tbl.querySelectorAll("tr")].forEach(tr => {
+          const cells = [...tr.children].map(cell => {
+            const tag = cell.tagName.toLowerCase() === "th" ? "th" : "td";
+            const al = (cell.getAttribute("align") || "").toLowerCase();
+            const style = /^(left|right|center)$/.test(al) ? ` style="text-align:${al}"` : "";
+            const txt = cell.textContent.replace(/\s+/g, " ").trim();
+            return `<${tag}${style}>${inlineMd(txt)}</${tag}>`;
+          }).join("");
+          if(cells) html += "<tr>" + cells + "</tr>";
+        });
+      }
+      html += "</table>";
+      if(tbl && tbl.querySelector("tr")) out.push({ t: "html", html: html });
       continue;
     }
 
