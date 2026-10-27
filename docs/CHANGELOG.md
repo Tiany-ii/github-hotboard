@@ -6,6 +6,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.4] - 2026-10-27
+
+### Fixed
+
+- The window opened pinned to the bottom-right corner, partly off-screen. The size was hard-coded
+  to 1480x950, which is taller than the work area on a 1536x928 desktop, so Windows clamped it.
+  The size is now derived from the work area (90%, capped at 1480x950) and the window is centred.
+  `min_size` shrinks with it so small screens cannot push it off-screen again.
+
+### Added
+
+- `--geometry` prints the detected work area and the computed window rectangle without opening a
+  window, for troubleshooting.
+
 ## [1.2.3] - 2026-10-27
 
 ### Fixed
@@ -93,7 +107,8 @@ First public release.
 - No automated tests or CI.
 - Binary is not code-signed, so SmartScreen warns on first run.
 
-[Unreleased]: https://github.com/Tiany-ii/github-hotboard/compare/v1.2.3...HEAD
+[Unreleased]: https://github.com/Tiany-ii/github-hotboard/compare/v1.2.4...HEAD
+[1.2.4]: https://github.com/Tiany-ii/github-hotboard/releases/tag/v1.2.4
 [1.2.3]: https://github.com/Tiany-ii/github-hotboard/releases/tag/v1.2.3
 [1.2.2]: https://github.com/Tiany-ii/github-hotboard/releases/tag/v1.2.2
 [1.2.1]: https://github.com/Tiany-ii/github-hotboard/releases/tag/v1.2.1

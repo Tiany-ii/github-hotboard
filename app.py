@@ -25,7 +25,7 @@ import urllib.parse
 
 APP_TITLE = "GitHub Hotboard"
 APP_FILE = "github-hot.html"
-__version__ = "1.2.3"
+__version__ = "1.2.4"
 PORT_FROM, PORT_TO = 8765, 8785
 
 INDEX_PATH = ""
@@ -445,6 +445,42 @@ class Downloader:
             shutil.rmtree(tmp, ignore_errors=True)
 
 
+def work_area():
+    """主屏可用区域（排除任务栏），返回 (x, y, w, h)。
+    与 pywebview 建窗用同一坐标空间，所以不做 DPI 换算。"""
+    try:
+        import ctypes
+        from ctypes import wintypes
+        rect = wintypes.RECT()
+        # SPI_GETWORKAREA = 0x0030
+        if ctypes.windll.user32.SystemParametersInfoW(0x0030, 0, ctypes.byref(rect), 0):
+            w, h = rect.right - rect.left, rect.bottom - rect.top
+            if w > 320 and h > 240:
+                return rect.left, rect.top, w, h
+    except Exception:
+        pass
+    try:
+        scr = webview.screens[0]
+        return 0, 0, int(scr.width), int(scr.height)
+    except Exception:
+        pass
+    return 0, 0, 1280, 800
+
+
+def window_geometry():
+    """按屏幕大小挑一个合适的窗口尺寸，并居中。
+    以前写死 1480x950，屏幕装不下时会被 Windows 挤到右下角。"""
+    ax, ay, aw, ah = work_area()
+    # 取可用区域的 90%，既留出四周空隙，又不超过设计尺寸 1480x950
+    w = min(1480, max(1000, int(aw * 0.9)))
+    h = min(950, max(640, int(ah * 0.9)))
+    w = min(w, aw)
+    h = min(h, ah)
+    x = ax + max(0, (aw - w) // 2)
+    y = ay + max(0, (ah - h) // 2)
+    return w, h, x, y
+
+
 def main():
     global INDEX_PATH, INDEX_SOURCE
 
@@ -487,6 +523,11 @@ def main():
         return
 
     store = storage_dir()
+
+    if "--geometry" in sys.argv:
+        g = window_geometry()
+        log("workarea=%s geometry=%dx%d at (%d,%d)" % (work_area(), g[0], g[1], g[2], g[3]))
+        return
 
     if "--where" in sys.argv:
         log("storage=%s portable=%s" % (store, os.path.basename(store) == "data"))
@@ -552,11 +593,18 @@ def main():
 
     downloader = Downloader()
 
+    win_w, win_h, win_x, win_y = window_geometry()
+    # 小屏上最小尺寸也要跟着缩，否则窗口仍会被挤出屏幕
+    min_w = min(1000, win_w)
+    min_h = min(640, win_h)
+    log("window %dx%d at (%d,%d) min %dx%d" % (win_w, win_h, win_x, win_y, min_w, min_h))
+
     window = webview.create_window(
         APP_TITLE, url,
         js_api=downloader,
-        width=1480, height=950,
-        min_size=(1000, 640),
+        width=win_w, height=win_h,
+        x=win_x, y=win_y,
+        min_size=(min_w, min_h),
         text_select=True,
     )
     shown = {"ok": False}
